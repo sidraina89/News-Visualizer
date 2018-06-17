@@ -36,7 +36,7 @@ class NewsFetcher:
     
     def getDailyNews(self):
         sources = self.getSources()
-        key = '57dfa3b34bcf43ffa8cdce89cc139d85'
+        key = 'de62ae3d4e514b46a87e48647c7de2b9'
         url = 'https://newsapi.org/v1/articles?source={0}&sortBy={1}&apiKey={2}'
         responses = []
         for i,source in enumerate(sources):
@@ -55,7 +55,7 @@ class NewsFetcher:
                 responses.append(r)
             except:
                 print('Rate limit exceeded ... please wait and retry in 6 hours')
-                print(r)
+                print("Status "+r['status']+". Message: "+r['message'])
                 return None
                     
         articles = list(map(lambda r: r['articles'], responses))
@@ -65,7 +65,7 @@ class NewsFetcher:
         news = news.dropna()
         news = news.drop_duplicates()
         news.reset_index(inplace=True, drop=True)
-        print(news.head())
+
         d = self.mapping()
         news['category'] = news['source'].map(lambda s: self.category(s, d))
         news['scraping_date'] = datetime.now()
@@ -81,3 +81,10 @@ class NewsFetcher:
             
         print('Done')
 
+def main():
+    fetch = NewsFetcher()
+    fetch.getDailyNews()
+    
+if __name__ == "__main__":
+    main()
+    
